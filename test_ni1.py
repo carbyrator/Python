@@ -1,4 +1,4 @@
-import ni1
+from Python import ni1
 import unittest
 class TestMySolution(unittest.TestCase):
     def test_1(self):
@@ -51,6 +51,9 @@ class TestMySolution(unittest.TestCase):
 
     def test_17(self):
         self.assertEqual(ni1.f([3, 6, 7, 4, 2, 1, 1, 9], 4), [0, 5])
+
+    def test_18(self):
+        self.assertEqual(ni1.f([3, 3, 3, 3], '18'), 'Нет подходящей пары для достижения целевой суммы')
 
 if __name__ == '__main__':
     unittest.main()
