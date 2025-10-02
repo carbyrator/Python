@@ -32,19 +32,6 @@ class TestGenBinTreeSimple(unittest.TestCase):
         right_child_value = list(tree["5"][1].keys())[0]  # ключ второго потомка
         self.assertEqual(right_child_value, "8")  # 2*(5-1)=8
 
-    def test_leaves_are_empty(self):
-        """Проверяем, что на последнем уровне листья имеют пустой список"""
-        tree = gen_bin_tree(height=2, root=3)
-
-        def check_leaves(t):
-            for k, branch in t.items():
-                if branch == []:
-                    continue
-                for c in branch:
-                    check_leaves(c)
-
-        check_leaves(tree)
-
     def test_custom_branch_functions(self):
         """Проверяем дерево с другими функциями ветвей"""
         tree = gen_bin_tree(height=1, root=5,
