@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} - {{ page_title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 20px; }
+        .currency-table { margin-top: 20px; }
+        .subscription-badge { cursor: pointer; }
+        .active-subscription { background-color: #198754 !important; }
+        .main-container { max-width: 1200px; margin: 0 auto; }
+        .refresh-btn { margin-bottom: 15px; }
+        .user-card { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">{{ app_name }}</a>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/">Главная</a>
+                    <a class="nav-link" href="/users">Пользователи</a>
+                    <a class="nav-link" href="/currencies">Все валюты</a>
+                    <a class="nav-link" href="/author">Об авторе</a>
+                </div>
+            </div>
+        </nav>
+
+        {% block content %}{% endblock %}
+
+        <footer class="mt-5 pt-3 text-muted border-top">
+            <div class="container">
+                <p>Приложение: {{ app_name }} версия {{ app_version }}</p>
+                <p>Автор: {{ author_name }}, группа: {{ author_group }}</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSubscription(currencyId, userId) {
+            fetch(`/toggle_subscription?user_id=${userId}&currency_id=${currencyId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Ошибка: ' + data.error);
+                    }
+                });
+        }
+
+        function refreshCurrencies() {
+            fetch('/refresh_currencies')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Ошибка обновления: ' + data.error);
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

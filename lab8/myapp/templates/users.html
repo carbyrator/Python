@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Пользователи и их подписки</h1>
+    
+    <div class="row mt-4">
+        {% for user_data in users_with_subscriptions %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ user_data.user.name }}</h5>
+                    <small>ID: {{ user_data.user.id }}</small>
+                </div>
+                <div class="card-body">
+                    <h6>Подписки на валюты:</h6>
+                    {% if user_data.currencies %}
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for currency in user_data.currencies %}
+                            <span class="badge bg-primary">
+                                {{ currency.char_code }}: {{ "%.2f"|format(currency.value) }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        <a href="/user?id={{ user_data.user.id }}" class="btn btn-sm btn-info mt-2">
+                            Подробнее
+                        </a>
+                    {% else %}
+                        <p class="text-muted">Нет подписок на валюты</p>
+                        <a href="/user?id={{ user_data.user.id }}" class="btn btn-sm btn-outline-info">
+                            Управлять подписками
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

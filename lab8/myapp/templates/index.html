@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Главная страница</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <h3>Подписки на валюты</h3>
+            
+            <div class="mb-3">
+                <button class="btn btn-primary" onclick="refreshCurrencies()">
+                    Обновить курсы валют
+                </button>
+            </div>
+            
+            {% if users_with_subscriptions %}
+                {% for user_data in users_with_subscriptions %}
+                <div class="card user-card">
+                    <div class="card-header">
+                        <h5>Пользователь: {{ user_data.user.name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if user_data.currencies %}
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Код</th>
+                                        <th>Валюта</th>
+                                        <th>Курс</th>
+                                        <th>Номинал</th>
+                                        <th>Курс за 1 ед.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for currency in user_data.currencies %}
+                                    <tr>
+                                        <td>{{ currency.char_code }}</td>
+                                        <td>{{ currency.name }}</td>
+                                        <td>{{ "%.4f"|format(currency.value) }}</td>
+                                        <td>{{ currency.nominal }}</td>
+                                        <td>{{ "%.4f"|format(currency.value / currency.nominal) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p>Нет подписок на валюты</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Нет пользователей с подписками</p>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Информация о приложении</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Название:</strong> {{ app_name }}</p>
+                    <p><strong>Версия:</strong> {{ app_version }}</p>
+                    <p><strong>Автор:</strong> {{ author_name }}</p>
+                    <p><strong>Группа:</strong> {{ author_group }}</p>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Статистика</h5>
+                </div>
+                <div class="card-body">
+                    <p>Всего валют: {{ total_currencies }}</p>
+                    <p>Всего пользователей: {{ total_users }}</p>
+                    <p>Всего подписок: {{ total_subscriptions }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
