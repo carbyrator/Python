@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Пользователь: {{ user.name }}</h1>
+    <p class="text-muted">ID: {{ user.id }}</p>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Текущие подписки</h5>
+                </div>
+                <div class="card-body">
+                    {% if subscribed_currencies %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Код</th>
+                                    <th>Название</th>
+                                    <th>Курс</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for currency in subscribed_currencies %}
+                                <tr>
+                                    <td>{{ currency.char_code }}</td>
+                                    <td>{{ currency.name }}</td>
+                                    <td>{{ "%.4f"|format(currency.value) }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" 
+                                                onclick="toggleSubscription('{{ currency.id }}', {{ user.id }})">
+                                            Отписаться
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>Нет подписок на валюты</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Доступные валюты для подписки</h5>
+                </div>
+                <div class="card-body">
+                    {% if available_currencies %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Код</th>
+                                    <th>Название</th>
+                                    <th>Курс</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for currency in available_currencies %}
+                                <tr>
+                                    <td>{{ currency.char_code }}</td>
+                                    <td>{{ currency.name }}</td>
+                                    <td>{{ "%.4f"|format(currency.value) }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success" 
+                                                onclick="toggleSubscription('{{ currency.id }}', {{ user.id }})">
+                                            Подписаться
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>Нет доступных валют для подписки</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <a href="/users" class="btn btn-secondary">Назад к списку пользователей</a>
+    </div>
+</div>
+{% endblock %}

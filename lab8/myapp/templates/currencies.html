@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Все валюты</h1>
+    
+    <div class="mb-3">
+        <button class="btn btn-primary" onclick="refreshCurrencies()">
+            Обновить курсы валют
+        </button>
+        <span class="ms-3 text-muted">Последнее обновление: {{ last_update }}</span>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped currency-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Цифр. код</th>
+                    <th>Симв. код</th>
+                    <th>Название</th>
+                    <th>Номинал</th>
+                    <th>Курс</th>
+                    <th>Курс за 1 ед.</th>
+                    <th>Подписка</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for currency in currencies %}
+                <tr>
+                    <td>{{ currency.num_code }}</td>
+                    <td><strong>{{ currency.char_code }}</strong></td>
+                    <td>{{ currency.name }}</td>
+                    <td>{{ currency.nominal }}</td>
+                    <td>{{ "%.4f"|format(currency.value) }}</td>
+                    <td>{{ "%.4f"|format(currency.value / currency.nominal) }}</td>
+                    <td>
+                        {% for user in users %}
+                        <div class="form-check">
+                            <input class="form-check-input subscription-checkbox" 
+                                   type="checkbox" 
+                                   id="sub_{{ currency.id }}_{{ user.id }}"
+                                   {% if currency.id in user_subscriptions.get(user.id, []) %}checked{% endif %}
+                                   onchange="toggleSubscription('{{ currency.id }}', {{ user.id }})">
+                            <label class="form-check-label" for="sub_{{ currency.id }}_{{ user.id }}">
+                                {{ user.name }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
