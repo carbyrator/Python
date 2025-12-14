@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="panel">
+    <h1>Все валюты</h1>
+    <div class="muted">Последнее обновление: {{ last_update }}</div>
+    <div style="margin-top:8px;">
+        <button class="btn primary" onclick="refreshCurrencies()">Обновить курсы</button>
+        <a class="btn" href="/currency/show">Показать в консоли</a>
+    </div>
+</div>
+
+<div class="panel">
+    <h3>Добавить валюту</h3>
+    <form action="/currency/create" method="get" style="display:grid; gap:8px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+        <input class="field" type="text" name="num_code" placeholder="NumCode" required>
+        <input class="field" type="text" name="char_code" placeholder="CharCode" maxlength="3" required>
+        <input class="field" type="text" name="name" placeholder="Название" required>
+        <input class="field" type="number" step="0.0001" name="value" placeholder="Курс за 1" required>
+        <input class="field" type="number" name="nominal" placeholder="Номинал из API" required>
+        <button class="btn primary" type="submit">Сохранить</button>
+    </form>
+</div>
+
+<div class="panel">
+    <h2>Текущие курсы</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>NumCode</th>
+                <th>CharCode</th>
+                <th>Название</th>
+                <th>Номинал API</th>
+                <th>Курс за 1</th>
+                <th>Курс за номинал</th>
+                <th>Подписки</th>
+                <th>Ручное изменение</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for currency in currencies %}
+            <tr>
+                <td>{{ currency.id }}</td>
+                <td>{{ currency.num_code }}</td>
+                <td><strong>{{ currency.char_code }}</strong></td>
+                <td>{{ currency.name }}</td>
+                <td>{{ currency.nominal }}</td>
+                <td>{{ "%.4f"|format(currency.value) }}</td>
+                <td>{{ "%.4f"|format(currency.value * currency.nominal) }}</td>
+                <td>
+                    {% for user in users %}
+                    <div>
+                        <label>
+                            <input type="checkbox"
+                                   {% if currency.id in user_subscriptions.get(user.id, []) %}checked{% endif %}
+                                   onchange="toggleSubscription('{{ currency.id }}', {{ user.id }})">
+                            {{ user.name }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </td>
+                <td>
+                    <form method="get" action="/currency/update" style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
+                        <input class="field" style="max-width:140px;" type="number" step="0.0001"
+                               name="{{ currency.char_code }}" value="{{ currency.value }}">
+                        <button class="btn" type="submit">Сохранить</button>
+                    </form>
+                    <a class="btn" href="/currency/delete?id={{ currency.id }}">Удалить</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

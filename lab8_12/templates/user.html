@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="panel">
+    <h1>{{ user.name }}</h1>
+    <div class="muted">ID: {{ user.id }}</div>
+    <a href="/users" class="btn" style="margin-top:8px;">Назад к списку пользователей</a>
+</div>
+
+<div class="panel">
+    <h3>Текущие подписки</h3>
+    {% if subscribed_currencies %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Код</th>
+                    <th>Название</th>
+                    <th>Курс за 1</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for currency in subscribed_currencies %}
+                <tr>
+                    <td>{{ currency.char_code }}</td>
+                    <td>{{ currency.name }}</td>
+                    <td>{{ "%.4f"|format(currency.value) }}</td>
+                    <td>
+                        <button class="btn"
+                                onclick="toggleSubscription('{{ currency.id }}', {{ user.id }})">
+                            Отписаться
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="muted">Нет подписок на валюты</div>
+    {% endif %}
+</div>
+
+<div class="panel">
+    <h3>Доступные валюты</h3>
+    {% if available_currencies %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Код</th>
+                    <th>Название</th>
+                    <th>Курс за 1</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for currency in available_currencies %}
+                <tr>
+                    <td>{{ currency.char_code }}</td>
+                    <td>{{ currency.name }}</td>
+                    <td>{{ "%.4f"|format(currency.value) }}</td>
+                    <td>
+                        <button class="btn primary"
+                                onclick="toggleSubscription('{{ currency.id }}', {{ user.id }})">
+                            Подписаться
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="muted">Нет доступных валют</div>
+    {% endif %}
+</div>
+{% endblock %}

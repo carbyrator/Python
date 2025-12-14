@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="panel">
+    <h1>Подписки на валюты</h1>
+    <p class="muted">Актуальные курсы берутся из API ЦБ РФ. Можно обновить курсы или менять их вручную в разделе «Все валюты».</p>
+    <div>Валют: {{ total_currencies }} · Пользователи: {{ total_users }} · Подписок: {{ total_subscriptions }}</div>
+    <div style="margin-top:8px;">
+        <button class="btn primary" onclick="refreshCurrencies()">Обновить курсы</button>
+    </div>
+</div>
+
+<div class="panel">
+    <h2>Пользователи и их курсы</h2>
+    {% if users_with_subscriptions %}
+        {% for user_data in users_with_subscriptions %}
+        <div style="margin-bottom: 16px;">
+            <strong>{{ user_data.user.name }}</strong> <span class="muted">ID: {{ user_data.user.id }}</span>
+            {% if user_data.currencies %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Код</th>
+                            <th>Название</th>
+                            <th>Курс за 1</th>
+                            <th>Номинал API</th>
+                            <th>Курс за номинал</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for currency in user_data.currencies %}
+                        <tr>
+                            <td>{{ currency.char_code }}</td>
+                            <td>{{ currency.name }}</td>
+                            <td>{{ "%.4f"|format(currency.value) }}</td>
+                            <td>{{ currency.nominal }}</td>
+                            <td>{{ "%.4f"|format(currency.value * currency.nominal) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="muted">Нет подписок на валюты</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="muted">Нет пользователей с подписками</p>
+    {% endif %}
+</div>
+{% endblock %}

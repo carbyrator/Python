@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="panel">
+    <h1>Пользователи и их подписки</h1>
+    <p class="muted">Перейдите в профиль, чтобы управлять подписками и видеть курсы за 1 единицу.</p>
+</div>
+
+<div class="panel">
+    {% for user_data in users_with_subscriptions %}
+    <div style="margin-bottom:14px;">
+        <strong>{{ user_data.user.name }}</strong> <span class="muted">ID: {{ user_data.user.id }}</span>
+        {% if user_data.currencies %}
+            <div style="margin:8px 0; display:flex; gap:8px; flex-wrap:wrap;">
+                {% for currency in user_data.currencies %}
+                <span style="padding:6px 8px; border:1px solid #e0e0e0; background:#f7f7f7; display:inline-block;">
+                    {{ currency.char_code }} · {{ "%.2f"|format(currency.value) }}
+                </span>
+                {% endfor %}
+            </div>
+            <a href="/user?id={{ user_data.user.id }}" class="btn">Подробнее</a>
+        {% else %}
+            <div class="muted" style="margin:8px 0;">Нет подписок на валюты</div>
+            <a href="/user?id={{ user_data.user.id }}" class="btn">Управлять подписками</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
