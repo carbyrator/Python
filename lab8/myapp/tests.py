@@ -7,15 +7,15 @@ from typing import List, Dict
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-# Поиск проекта lab8_12
+# Поиск проекта lab9
 def find_project_path() -> (str, str):
     """
-    Ищет путь к проекту lab8_12.
+    Ищет путь к проекту lab9.
 
-    Проходит по кандидатам и пытается найти каталог с проектом lab8_12.
+    Проходит по кандидатам и пытается найти каталог с проектом lab9.
 
     Возвращает:
-        tuple: Путь к проекту и путь к lab8_12 (если найдено), иначе (None, None).
+        tuple: Путь к проекту и путь к lab9 (если найдено), иначе (None, None).
     """
     candidates = [
         THIS_DIR,
@@ -23,7 +23,7 @@ def find_project_path() -> (str, str):
         os.path.join(THIS_DIR, 'tmp', 'project'),
     ]
     for candidate in candidates:
-        lab_path = os.path.join(candidate, 'lab8_12')
+        lab_path = os.path.join(candidate, 'lab9')
         if os.path.isdir(lab_path):
             return candidate, lab_path
     return None, None
@@ -34,7 +34,7 @@ if project_dir:
     sys.path.insert(0, project_dir)
     sys.path.insert(0, lab8_12_dir)
 else:
-    raise ImportError("Cannot find lab8_12 project")
+    raise ImportError("Cannot find lab9 project")
 
 
 # ---------------------------------------------------------------------------
@@ -46,7 +46,7 @@ class TestUserModel(unittest.TestCase):
 
     def test_user_creation(self) -> None:
         """ Тестирование создания пользователя. """
-        from lab8_12.models.user import User
+        from lab9.models.user import User
         user = User(1, "Иван")
         self.assertEqual(user.id, 1)
         self.assertEqual(user.name, "Иван")
@@ -57,7 +57,7 @@ class TestAuthorModel(unittest.TestCase):
 
     def test_author_creation(self) -> None:
         """ Тестирование создания автора. """
-        from lab8_12.models.author import Author
+        from lab9.models.author import Author
         author = Author("Иван", "P3120")
         self.assertEqual(author.name, "Иван")
         self.assertEqual(author.group, "P3120")
@@ -68,8 +68,8 @@ class TestAppModel(unittest.TestCase):
 
     def test_app_creation(self) -> None:
         """ Тестирование создания приложения. """
-        from lab8_12.models.author import Author
-        from lab8_12.models.app import App
+        from lab9.models.author import Author
+        from lab9.models.app import App
         author = Author("Иван", "P3120")
         app = App("Приложение", "1.0", author)
         self.assertEqual(app.name, "Приложение")
@@ -82,7 +82,7 @@ class TestCurrencyModel(unittest.TestCase):
 
     def test_currency_creation(self) -> None:
         """ Тестирование создания валюты. """
-        from lab8_12.models.currency import Currency
+        from lab9.models.currency import Currency
         currency = Currency("R01235", "840", "USD", "Доллар США", 90.5, 1)
         self.assertEqual(currency.char_code, "USD")
         self.assertEqual(currency.name, "Доллар США")
@@ -93,7 +93,7 @@ class TestUserCurrencyModel(unittest.TestCase):
 
     def test_user_currency_creation(self) -> None:
         """ Тестирование создания связи между пользователем и валютой. """
-        from lab8_12.models.user_currency import UserCurrency
+        from lab9.models.user_currency import UserCurrency
         uc = UserCurrency(1, 2, "R01235")
         self.assertEqual(uc.user_id, 2)
         self.assertEqual(uc.currency_id, "R01235")
@@ -104,7 +104,7 @@ class TestGetCurrencies(unittest.TestCase):
 
     def test_parse_xml_success(self) -> None:
         """ Тестирование успешного парсинга XML-ответа при получении курсов валют. """
-        from lab8_12.utils.currencies_api import get_currencies
+        from lab9.utils.currencies_api import get_currencies
 
         xml = """<?xml version="1.0" encoding="utf-8"?>
         <ValCurs Date="02.12.2025" name="Foreign Currency Market">
@@ -123,7 +123,7 @@ class TestGetCurrencies(unittest.TestCase):
         mock_context.__enter__ = Mock(return_value=mock_response)
         mock_context.__exit__ = Mock(return_value=None)
 
-        with patch('lab8_12.utils.currencies_api.urlopen', return_value=mock_context):
+        with patch('lab9.utils.currencies_api.urlopen', return_value=mock_context):
             data = get_currencies()
 
         self.assertIn("USD", data)
@@ -140,8 +140,8 @@ class TestTemplates(unittest.TestCase):
         self.env = Environment(loader=FileSystemLoader(templates_path), autoescape=True)
 
         # Импорт моделей
-        from lab8_12.models.user import User
-        from lab8_12.models.currency import Currency
+        from lab9.models.user import User
+        from lab9.models.currency import Currency
         self.User = User
         self.Currency = Currency
 
