@@ -13,7 +13,7 @@ def find_project_path() -> tuple[str | None, str | None]:
         os.path.join(THIS_DIR, "tmp", "project"),
     ]
     for candidate in candidates:
-        lab_path = os.path.join(candidate, "lab8_12")
+        lab_path = os.path.join(candidate, "lab9")
         if os.path.isdir(lab_path):
             return candidate, lab_path
     return None, None
@@ -24,12 +24,12 @@ if project_dir:
     sys.path.insert(0, project_dir)
     sys.path.insert(0, lab8_12_dir)
 else:
-    raise ImportError("Cannot find lab8_12 project")
+    raise ImportError("Cannot find lab9 project")
 
 
 class TestCurrencyModel(unittest.TestCase):
     def test_currency_validation(self) -> None:
-        from lab8_12.models.currency import Currency
+        from lab9.models.currency import Currency
 
         currency = Currency("840", "usd", "Доллар США", 90.5, 1)
         self.assertEqual(currency.char_code, "USD")
@@ -43,8 +43,8 @@ class TestCurrencyModel(unittest.TestCase):
 
 class TestDatabaseController(unittest.TestCase):
     def setUp(self) -> None:
-        from lab8_12.controllers.databasecontroller import CurrencyRatesCRUD
-        from lab8_12.models.currency import Currency
+        from lab9.controllers.databasecontroller import CurrencyRatesCRUD
+        from lab9.models.currency import Currency
 
         self.Currency = Currency
         self.db = CurrencyRatesCRUD()
@@ -78,7 +78,7 @@ class TestDatabaseController(unittest.TestCase):
 
 class TestCurrencyController(unittest.TestCase):
     def test_list_currencies_with_mock(self) -> None:
-        from lab8_12.controllers.currencycontroller import CurrencyController
+        from lab9.controllers.currencycontroller import CurrencyController
 
         mock_db = MagicMock()
         mock_db._read.return_value = [{"id": 1, "char_code": "USD", "value": 90}]
@@ -90,7 +90,7 @@ class TestCurrencyController(unittest.TestCase):
 
 class TestGetCurrencies(unittest.TestCase):
     def test_parse_xml_success(self) -> None:
-        from lab8_12.utils.currencies_api import get_currencies
+        from lab9.utils.currencies_api import get_currencies
 
         xml = """<?xml version="1.0" encoding="utf-8"?>
         <ValCurs Date="02.12.2025" name="Foreign Currency Market">
@@ -109,7 +109,7 @@ class TestGetCurrencies(unittest.TestCase):
         mock_context.__enter__ = Mock(return_value=mock_response)
         mock_context.__exit__ = Mock(return_value=None)
 
-        with patch("lab8_12.utils.currencies_api.urlopen", return_value=mock_context):
+        with patch("lab9.utils.currencies_api.urlopen", return_value=mock_context):
             data = get_currencies()
 
         self.assertIn("USD", data)
